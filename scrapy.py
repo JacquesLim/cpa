@@ -17,6 +17,7 @@ def scrapy_qimai_search(keyword):
     app_rows = soup.find_all(class_="ivu-table-row")
     # print(apps)
     app_data = ["app_info", "(app_id, app_name, app_subtitle, app_publisher, app_category, app_category_rank, date, search_word)", "(%s, %s, %s, %s, %s, %s, %s, %s)"]
+    app_id, app_name, app_subtitle, app_publisher, app_category, app_category_rank, date = [""] * 7
     for app_row in app_rows:
         # app_infos = app_row.select("div[class='info-content'] p")
         app_infos = app_row.find_all(class_="ivu-table-cell")
@@ -34,8 +35,9 @@ def scrapy_qimai_search(keyword):
                 app_subtitle = app_info[1].text
                 app_publisher = app_info[2].text
             app_categoryrank = app_infos[4].find_all('p')
-            app_category = app_categoryrank[1].text
-            app_category_rank = app_categoryrank[0].text
+            if len(app_categoryrank) > 1:
+                app_category = app_categoryrank[1].text
+                app_category_rank = app_categoryrank[0].text
 
             app_id = int(app_link.split('/')[4])
             date = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")

@@ -12,7 +12,7 @@ if __name__ == "__main__":
     db = "cpa"
     charset = "utf8"
     cpa = Database(host, port, user, passwd, db, charset)
-    dataset = scrapy.scrapy_qimai_search("招标")
+    dataset = scrapy.scrapy_qimai_search("中标")
     table = dataset[0]
     column = dataset[1]
     datatype = dataset[2]
