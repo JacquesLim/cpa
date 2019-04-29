@@ -1,3 +1,12 @@
+#!/usr/bin/env python3
+# -*- encoding: utf-8 -*-
+'''
+@File    :   ttt.py
+@Contact :   258770530@qq.com.com
+@Modify Time      @Author        @Version    @Desciption
+------------      -------        --------    -----------
+2019/4/25 16:39   Jacques Lim    1.0         None
+'''
 from bs4 import BeautifulSoup
 from urllib.request import urlopen
 import requests
