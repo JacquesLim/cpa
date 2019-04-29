@@ -24,12 +24,47 @@ class Database:
         self.connect = connect
         self.cursor = cursor
 
-    # 定义要执行的sql语句
     def insert(self, table, column, datatype, value):
+        '''
+        向数据表table插入数据
+        :param table: 数据表名
+        :param column: 字段
+        :param datatype: 字段数据类型
+        :param value: 插入的值
+        :return:
+        '''
         sql = 'insert into ' + table + str(column) + ' values' + str(datatype) + ';'
         print(sql)
         self.cursor.executemany(sql, value)
         self.connect.commit()
+
+    def select_latest_record_date(self, appid):
+        '''
+        根据appid 查询表app_record最后更新时间
+        :param appid:
+        :return: 最后更新时间
+        '''
+        sql = 'select app_date from app_record where app_id=' + str(appid) + ' order by app_date desc limit 1;'
+        print(sql)
+        try:
+            print("正在查询APPID:" + str(appid))
+            self.cursor.execute(sql)
+            result = self.cursor.fetchone()[0]
+        except:
+            print("该APPID:" + str(appid) + "没有任何数据")
+            result = ""
+        return result
+
+    def select_all_app(self):
+        sql = 'select * from app_info group by app_id order by date desc;'
+        print(sql)
+        try:
+            self.cursor.execute(sql)
+            results = self.cursor.fetchall()
+        except:
+            print("查询失败")
+            results = ""
+        return results
 
 # # 打开数据库连接
 # db = pymysql.connect("rm-wz9rw2pr9mox4w6m1go.mysql.rds.aliyuncs.com", "root", "Root@2017", "mysql")

@@ -58,7 +58,7 @@ def scrapy_qimai_search(keyword):
     browser.close()
     return app_data
 
-def scrapy_qimai_app_search(appid):
+def scrapy_qimai_app_search(appid, type='all'):
     '''
     在网页https://www.qimai.cn/app/version/appid/ 搜索APP ID，并返回APP相关信息
     :param appid:
@@ -80,7 +80,10 @@ def scrapy_qimai_app_search(appid):
         :return:
         '''
         app_name, app_subtitle, app_version, app_date, app_log, app_desc, app_imgurl = [""] * 7
-        record_lists = soup.find('ul', class_="record-list").find_all('li')
+        record_lists_html = soup.find('ul', class_="record-list")
+        record_lists = ""
+        if(record_lists_html is not None):
+            record_lists = record_lists_html.find_all('li')
         for record_list in record_lists:
             if (record_list.find('p', class_="version") is not None):
                 if (record_list.find('p', class_="version") is not None):
@@ -108,22 +111,23 @@ def scrapy_qimai_app_search(appid):
                 app_name, app_subtitle, app_version, app_date, app_log, app_desc, app_imgurl = [""] * 7 #重置变量
 
     get_page_data()#先爬取第一页
-    #爬取其它分页数据
-    pages = soup.find_all(class_="page ivu-page")[0].find_all('li')
-    page_actives = soup.find_all(class_="ivu-page-item-active")
-    page_active = page_actives[0].a.text
-    while(page_active != pages[-2].a.text):
-        page_next = browser.find_element_by_class_name("ivu-page-next")
-        time.sleep(3)
-        browser.execute_script(
-            "window.scrollTo(0, document.body.scrollHeight); var lenOfPage=document.body.scrollHeight; return lenOfPage;")
-        page_next.click()
-        soup = BeautifulSoup(browser.page_source, 'html.parser')
-        get_page_data()
-        soup = BeautifulSoup(browser.page_source, 'html.parser')
+    if(type=='all'):
+        #爬取其它分页数据
         pages = soup.find_all(class_="page ivu-page")[0].find_all('li')
         page_actives = soup.find_all(class_="ivu-page-item-active")
         page_active = page_actives[0].a.text
+        while(page_active != pages[-2].a.text):
+            page_next = browser.find_element_by_class_name("ivu-page-next")
+            time.sleep(3)
+            browser.execute_script(
+                "window.scrollTo(0, document.body.scrollHeight); var lenOfPage=document.body.scrollHeight; return lenOfPage;")
+            page_next.click()
+            soup = BeautifulSoup(browser.page_source, 'html.parser')
+            get_page_data()
+            soup = BeautifulSoup(browser.page_source, 'html.parser')
+            pages = soup.find_all(class_="page ivu-page")[0].find_all('li')
+            page_actives = soup.find_all(class_="ivu-page-item-active")
+            page_active = page_actives[0].a.text
 
     browser.close()
     return app_data
