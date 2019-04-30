@@ -11,8 +11,15 @@ import time
 from selenium import webdriver
 from bs4 import BeautifulSoup
 import datetime
+from fake_useragent import UserAgent
 driver_url = r"C:\Users\mayn\AppData\Local\Google\Chrome\Application\chromedriver.exe"
 # driver_url = r"C:\Program Files (x86)\Google\Chrome\Application\chromedriver.exe"
+
+def get_random_header():
+    ua = UserAgent()
+    header = 'user-agent=' + ua.random
+    print(header)
+    return header
 
 def scrapy_qimai_search(keyword):
     """
@@ -20,7 +27,11 @@ def scrapy_qimai_search(keyword):
     :param keyword:
     :return: [(app_id, app_name, app_subtitle, app_publisher, app_category, app_category_rank, date, keyword)]
     """
-    browser = webdriver.Chrome(executable_path=driver_url)
+    header = get_random_header()
+    options = webdriver.ChromeOptions()
+    options.add_argument(header) # 伪造header
+    # options.add_argument('--headless')
+    browser = webdriver.Chrome(executable_path=driver_url, chrome_options=options)
     browser.get("https://www.qimai.cn/search/index/country/cn/search/"+keyword)
     time.sleep(3)
     for i in range(4): #下翻4页，共5页
@@ -64,7 +75,13 @@ def scrapy_qimai_app_search(appid, type='all'):
     :param appid:
     :return:
     '''
-    browser = webdriver.Chrome(executable_path=driver_url)
+
+    header = get_random_header() # 伪造header
+    options = webdriver.ChromeOptions()
+    options.add_argument(header)
+    # options.add_argument('--headless')
+    browser = webdriver.Chrome(executable_path=driver_url, chrome_options=options)
+
     browser.get("https://www.qimai.cn/app/version/appid/"+str(appid)+"/country/cn")
     time.sleep(3)
     global app_data

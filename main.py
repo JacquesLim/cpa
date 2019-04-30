@@ -43,7 +43,9 @@ if __name__ == "__main__":
         latest_db = cpa.select_latest_record_date(app_info[0])
         appinfo_page = scrapy.scrapy_qimai_app_search(app_info[0],1)
         if(len(appinfo_page)>3):
-            latest_page = appinfo_page[3][0]
+            latest_page = appinfo_page[3][4]
+            print(latest_db)
+            print(latest_page)
             if(latest_db!=latest_page):
                 insert_appid_record(app_info[0])
 
