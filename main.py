@@ -1,5 +1,6 @@
 from db import Database
 import scrapy
+import app
 
 def insert_appid_record(appid):
     #搜索APPID，并插入数据库
@@ -16,13 +17,13 @@ def insert_appid_record(appid):
 
 if __name__ == "__main__":
     #数据库字段声明
-    host = "rm-wz9rw2pr9mox4w6m1go.mysql.rds.aliyuncs.com"
-    port = 3306
-    user = "root"
-    passwd = "Root@2017"
-    db = "cpa"
-    charset = "utf8"
-    cpa = Database(host, port, user, passwd, db, charset)
+    # host = "rm-wz9rw2pr9mox4w6m1go.mysql.rds.aliyuncs.com"
+    # port = 3306
+    # user = "root"
+    # passwd = "Root@2017"
+    # db = "cpa"
+    # charset = "utf8"
+    # cpa = Database(host, port, user, passwd, db, charset)
 
     # 搜索关键词，并插入数据库
     # dataset = scrapy.scrapy_qimai_search("中标")
@@ -37,15 +38,18 @@ if __name__ == "__main__":
     # cpa.insert(table, column, datatype, value)
 
     #爬取所有APPID的最新迭代记录
-    appinfo_db = cpa.select_all_app()
-    for app_info in appinfo_db:
-        # print(app_info[0])
-        latest_db = cpa.select_latest_record_date(app_info[0])
-        appinfo_page = scrapy.scrapy_qimai_app_search(app_info[0],1)
-        if(len(appinfo_page)>3):
-            latest_page = appinfo_page[3][4]
-            print(latest_db)
-            print(latest_page)
-            if(latest_db!=latest_page):
-                insert_appid_record(app_info[0])
+    # appinfo_db = cpa.select_all_app()
+    # for app_info in appinfo_db:
+    #     # print(app_info[0])
+    #     latest_db = cpa.select_latest_record_date(app_info[0])
+    #     appinfo_page = scrapy.scrapy_qimai_app_search(app_info[0],1)
+    #     if(len(appinfo_page)>3):
+    #         latest_page = appinfo_page[3][4]
+    #         print(latest_db)
+    #         print(latest_page)
+    #         if(latest_db!=latest_page):
+    #             insert_appid_record(app_info[0])
 
+    app.get_all_appid('C:/Users/mayn/Desktop/appid.txt', 'C:/Users/mayn/Desktop/done.txt', ['6018'], 'E', 53)
+    # print(app.get_proxy_ip())
+    # print(app.get_proxy())
