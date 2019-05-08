@@ -1,4 +1,2 @@
-a = 2.2
-b = 2.7
-print(int(a))
-print(int(b))
+for i in range(1,10):
+    print(i)
