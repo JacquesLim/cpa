@@ -5,7 +5,7 @@
 @Contact :   258770530@qq.com.com
 @Modify Time      @Author        @Version    @Desciption
 ------------      -------        --------    -----------
-2019/4/25 16:39   Jacques Lim    1.0         None
+2019/4/25 16:39   Jacques Lim    1.0         用于数据库连接
 '''
 
 import pymysql
@@ -65,19 +65,3 @@ class Database:
             print("查询失败")
             results = ""
         return results
-
-# # 打开数据库连接
-# db = pymysql.connect("rm-wz9rw2pr9mox4w6m1go.mysql.rds.aliyuncs.com", "root", "Root@2017", "mysql")
-#
-# # 使用 cursor() 方法创建一个游标对象 cursor
-# cursor = db.cursor()
-#
-#
-#
-# # 使用 fetchone() 方法获取单条数据.
-# data = cursor.fetchone()
-#
-# print("Database version : %s " % data)
-#
-# # 关闭数据库连接
-# db.close()

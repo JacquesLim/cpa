@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 '''
-@File    :   ttt.py
+@File    :   app_id.py
 @Contact :   258770530@qq.com.com
 @Modify Time      @Author        @Version    @Desciption
 ------------      -------        --------    -----------
@@ -27,17 +27,21 @@ all_pages_links_path = 'C:/Users/mayn/Desktop/all_pages_links.txt'
 all_app_links_path =  'C:/Users/mayn/Desktop/all_app_links.txt'
 
 ips = [
-  "119.180.161.22:8060",
-  "27.203.244.62:8060",
-  "27.208.140.165:8060",
-  "47.75.223.130:8080",
-  "27.208.70.35:8060",
-  "196.13.208.23:8080",
-  "47.52.231.140:8080",
-  "47.94.230.42:9999",
-  "94.130.20.85:31288",
-  "221.4.150.7:8181"
+  "49.51.86.2:3128",
+  "123.59.47.5:8080",
+  "120.78.141.110:3128",
+  "119.101.116.95:9999",
+  "61.128.208.94:3128",
+  "112.87.69.142:9999",
+  "112.85.128.247:9999",
+  "59.38.62.100:9797",
+  "95.88.12.230:3128",
+  "202.101.96.115:1080",
+  "113.247.252.114:9090",
+  "118.25.40.97:80",
+  "112.87.71.73:9999"
 ]
+
 
 def get_random_header():
     ua = UserAgent()
@@ -45,7 +49,7 @@ def get_random_header():
         "User-Agent": ua.random
 
     }
-    print(header)
+    # print(header)
     return header
 
 def getHtml(url):
@@ -55,7 +59,8 @@ def getHtml(url):
         headers = get_random_header() #爬取有效链接时不用
         rand_ip = get_proxy_ip() #爬取有效链接时不用
         proxies = {
-            'https': 'https://' + rand_ip
+            'http': 'http://' + rand_ip
+            # 'https': 'https://' + rand_ip
         }
 
         try:
@@ -75,7 +80,7 @@ def getHtml(url):
 
 def get_proxy_ip():
     rand_ip = random.choice(ips)
-    print(rand_ip)
+    # print(rand_ip)
     return rand_ip
 
 def get_links(url,classname):
@@ -95,7 +100,7 @@ def get_links(url,classname):
             link = one_a.get('href')
             links.append(link)
     except:
-        print("获取的HTML内容为空")
+        # print("获取的HTML内容为空")
         get_links(url, classname)
     return links
 
@@ -157,9 +162,12 @@ for genre_letter_link in genre_letter_links:
 
 '''
 all_pages_links = []
-with open(all_pages_links_path, 'r', encoding='utf8')as f:  # 记录各个分类热门APP链接
+with open(all_pages_links_path, 'r', encoding='utf8')as f:
     all_pages_links = f.read().split('\n')
 for page_link in all_pages_links:
     page_app_links = get_links(page_link, 'grid3-column')
-    with open(genre_letters_pavs_links_path, 'a+', encoding='utf8')as f:  # 记录各个分类字母分类下各个分页的链接
-        f.write(all_app_links_path + '\n')
+    print('正在爬取的链接：{}'.format(page_link))
+    print('此页共有APPID：{}个'.format(len(page_app_links)))
+    for page_app_link in page_app_links:
+        with open(all_app_links_path, 'a+', encoding='utf8')as f:
+            f.write(page_app_link + '\n')

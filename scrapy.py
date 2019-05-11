@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- encoding: utf-8 -*-
 '''
-@File    :   ttt.py
+@File    :   scrapy.py
 @Contact :   258770530@qq.com.com
 @Modify Time      @Author        @Version    @Desciption
 ------------      -------        --------    -----------
-2019/4/25 16:39   Jacques Lim    1.0         None
+2019/4/25 16:39   Jacques Lim    1.0        该文档是爬取七麦iOS APP数据
+                                            考虑到更新不及时问题，和反爬的处理，将不再采用该方式，已停止维护
 '''
 import time
 from selenium import webdriver

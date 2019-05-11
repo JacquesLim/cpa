@@ -5,7 +5,8 @@
 @Contact :   258770530@qq.com.com
 @Modify Time      @Author        @Version    @Desciption
 ------------      -------        --------    -----------
-2019/4/25 16:39   Jacques Lim    1.0         None
+2019/4/25 16:39   Jacques Lim    1.0         这是第一次用的获取APPID方法，容易出错，将不再使用
+                                            正确的做法是先获取所有有效网址，见get_all_app_links.py
 '''
 from bs4 import BeautifulSoup
 import requests
