@@ -38,6 +38,25 @@ class Database:
         self.cursor.executemany(sql, value)
         self.connect.commit()
 
+    @staticmethod
+    def insert_sql(table, column, values):
+        '''
+        生成批量插入sql
+        :param table: 数据表名
+        :param column: 字段
+        :param value: 插入的值列表[(),(),()]
+        :return:
+        '''
+        sql = 'insert into {}{} values {};'
+        for v in  values:
+            sql = sql.format(table,column,v)
+        return sql
+
+    @staticmethod
+    def update_sql(table, field, condition):
+        sql = 'update {} SET {} where {};'.format(table, field, condition)
+        return sql
+
     def select_latest_record_date(self, appid):
         '''
         根据appid 查询表app_record最后更新时间
