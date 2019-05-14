@@ -15,9 +15,9 @@ import json
 from db import Database
 
 # APP链接文件路径
-app_links_path = './datafile/all_app_links_test.txt'
+app_links_path = './datafile/all_app_links.txt'
 # 插入数据库sql文件
-insert_appinfo_sql_path = './datafile/insert_appinfo.sql'
+insert_appinfo_sql_path = './datafile/insert_appinfo_{}.sql'
 # log文件
 get_app_info_log_path = './log/get_app_info.log'
 
@@ -76,11 +76,11 @@ def get_app_info(id):
 
 if __name__ == "__main__":
     with open(app_links_path, 'r', encoding='utf8')as file:
-        n=0
+        n=50000
         for line in file:
             n += 1
             id = line.split('/')[6].replace('id', '').replace('?mt=8', '')
-            with open(insert_appinfo_sql_path, 'a+', encoding='utf8')as ff:
+            with open(insert_appinfo_sql_path.format(int(n/10000)), 'a+', encoding='utf8')as ff:
                 sql = get_app_info(int(id))
                 if sql is not None:
                     ff.write(sql)
