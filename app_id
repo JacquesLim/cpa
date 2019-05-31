@@ -66,7 +66,7 @@ def getHtml(url):
         try:
             html = requests.get(url, headers=headers, proxies=proxies, timeout=10)
             # html = requests.get(url, timeout=10)
-            if len(html.text) > 0:
+            if len(html.text) > 10:
                 return html
             else:
                 getHtml(url)

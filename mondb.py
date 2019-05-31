@@ -23,3 +23,6 @@ class Database:
     def del_one(self, index, value):
         myquery = {index: value}
         self.mycol.delete_one(myquery)
+
+db = Database('127.0.0.1', 'proxy', 'useful_proxy')
+print(db.get_one('proxy'))
