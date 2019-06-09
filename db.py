@@ -9,6 +9,7 @@
 '''
 
 import pymysql
+import traceback
 
 class Database:
     def __init__(self, host, port, user, passwd, db, charset):
@@ -82,5 +83,39 @@ class Database:
             results = self.cursor.fetchall()
         except:
             print("查询失败")
+            results = ""
+        return results
+
+    def select_appinfo(self, id):
+        sql = 'select `id`,`icon`,`title`,`subtitle`,`version`,`updated`,`developer`,`price`,`currentVersionRating`,`currentVersionRatingCount`,' \
+              '`screenshots`,`releaseNotes`,`description`,`similar` from app_info where id = {}'.format(id)
+        # print(sql)
+        try:
+            self.cursor.execute(sql)
+            results = self.cursor.fetchone()
+        except:
+            traceback.print_exc()
+            results = ""
+        return results
+
+    def select_appinfo_smart(self, id):
+        sql = 'select `id`,`icon`,`title` from app_info where id = {}'.format(id)
+        # print(sql)
+        try:
+            self.cursor.execute(sql)
+            results = self.cursor.fetchone()
+        except:
+            traceback.print_exc()
+            results = ""
+        return results
+
+    def get_posts_last_id(self):
+        sql = 'SELECT id FROM f_posts LIMIT 1'
+        # print(sql)
+        try:
+            self.cursor.execute(sql)
+            results = self.cursor.fetchone()
+        except:
+            traceback.print_exc()
             results = ""
         return results
