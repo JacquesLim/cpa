@@ -138,7 +138,7 @@ def get_flarum_appInfo_post(cpa, id):
             similar_icon = similarApp_info[1]
             similar_icon = get_icon_link(similar_icon, 100)
             similar_title = similarApp_info[2]
-            ttt = '<URL url="http://127.0.0.1/d/{}-{}"><IMG src="{}"></IMG></URL>\n<STRONG><s>**</s><URL url="http://127.0.0.1/d/{}-{}"><s>[</s>{}<e>](http://127.0.0.1/d/{}-{})</e></URL><e>**</e></STRONG><br/>\n'.format(
+            ttt = '<URL url="/d/{}-{}"><IMG src="{}"></IMG></URL>\n<STRONG><s>**</s><URL url="/d/{}-{}"><s>[</s>{}<e>](/d/{}-{})</e></URL><e>**</e></STRONG><br/>\n'.format(
                 similar_id, similar_title, similar_icon, similar_id, similar_title, similar_title, similar_id,
                 similar_title)
             txt += ttt

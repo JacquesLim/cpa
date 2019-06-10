@@ -17,21 +17,7 @@ def insert_appid_record(appid):
     print(value2)
     cpa.insert(table2, column2, datatype2, value2)
 
-if __name__ == "__main__":
-    #数据库字段声明
-    host = "rm-wz9rw2pr9mox4w6m1go.mysql.rds.aliyuncs.com"
-    port = 3306
-    user = "root"
-    passwd = "Root@2017"
-    db = "app_ios"
-    charset = "utf8"
-    cpa = Database(host, port, user, passwd, db, charset)
-    db2 = "mac_flarum"
-    cpa2 = Database(host, port, user, passwd, db2, charset)
-
-    ids = [281747159, 281922769, 281935788, 282614216]
-    # ids = [281736535]
-    # print(text_process.get_flarum_appInfo_post(cpa, 284943962))
+def insert_ali_flarum(ids):
     table_posts = 'f_posts'
     table_discussions = 'f_discussions'
     table_discussion_tag = 'f_discussion_tag'
@@ -52,12 +38,12 @@ if __name__ == "__main__":
     values_disscussion_tag = []
 
     for id in ids:
-        value_posts = (id, 1, now, 2, 'comment', text_process.get_flarum_appInfo_post(cpa, id))
+        value_posts = (id, 1, now, 3, 'comment', text_process.get_flarum_appInfo_post(cpa, id))
         res = cpa.select_appinfo(id)
         title = res[2]
         # print(title)
         post_id = cpa2.get_posts_last_id()[0] + 1
-        value_discussions = (id, title, 1, 1, 1, now, 2, post_id, now, 2, post_id, 1, title, 0, 1, 0, 0)
+        value_discussions = (id, title, 1, 1, 1, now, 3, post_id, now, 3, post_id, 1, title, 0, 1, 0, 0)
         value_disscussion_tag = (id, 2)
         values_posts.append(value_posts)
         values_discussions.append(value_discussions)
@@ -68,6 +54,29 @@ if __name__ == "__main__":
     cpa2.insert(table_posts, column_posts, datatype_posts, values_posts)
     cpa2.insert(table_discussions, column_discussions, datatype_discussions, values_discussions)
     cpa2.insert(table_discussion_tag, column_discussion_tag, datatype_discussion_tag, values_disscussion_tag)
+
+if __name__ == "__main__":
+    #数据库字段声明
+    host = "rm-wz9rw2pr9mox4w6m1go.mysql.rds.aliyuncs.com"
+    port = 3306
+    user = "root"
+    passwd = "Root@2017"
+    db = "app_ios"
+    charset = "utf8"
+    cpa = Database(host, port, user, passwd, db, charset)
+    db2 = "ali_flarum"
+    cpa2 = Database(host, port, user, passwd, db2, charset)
+
+    with open('/Users/Jacques/Downloads/ids.txt','r',encoding='utf8')as f:
+        # ids = f.read().strip().split('\n')
+        for line in f:
+            ids = [int(line.strip())]
+            insert_ali_flarum(ids)
+            # print(ids)
+    # ids = [284145181]
+    # ids = [281736535]
+    # print(text_process.get_flarum_appInfo_post(cpa, 284943962))
+
 
 
 
