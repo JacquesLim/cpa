@@ -58,9 +58,10 @@ def get_icon_link(url, size):
     :param size:
     :return:
     '''
-    link = url.split('/')
-    link[-1] = '{}x{}bb.jpg'.format(size,size)
-    url = '/'.join(link)
+    if url is not None:
+        link = url.split('/')
+        link[-1] = '{}x{}bb.jpg'.format(size,size)
+        url = '/'.join(link)
     return url
 
 def get_text_tran(text):
@@ -80,6 +81,7 @@ def get_flarum_appInfo_post(cpa, id):
     res = cpa.select_appinfo(id)
     txt = ''
 
+    # print(res)
     icon = get_icon_link(res[1], 100)
     txt += '<r><p><IMG src="{}"></IMG></p>'.format(icon)
 

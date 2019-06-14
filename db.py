@@ -109,8 +109,8 @@ class Database:
             results = ""
         return results
 
-    def get_posts_last_id(self):
-        sql = 'SELECT id FROM f_posts LIMIT 1'
+    def get_posts_last_post_id(self, id):
+        sql = 'SELECT id, created_at FROM f_posts WHERE discussion_id={}'.format(id)
         # print(sql)
         try:
             self.cursor.execute(sql)

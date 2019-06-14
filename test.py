@@ -3,23 +3,23 @@
 # rasting = 'https://itunes.apple.com/cn/customer-reviews/id1335458066?displayable-kind=11'
 from bs4 import BeautifulSoup
 import requests
-import json
-from db import Database
-from bs4 import BeautifulSoup
-import re
+from readability import Document
+from aip import AipNlp
 
-id = 1335458066
-url = 'https://itunes.apple.com/cn/app/app/id{}'
-html = requests.get(url.format(id), timeout=10)
-soup = BeautifulSoup(html.text, 'html.parser')
-str = soup.find(id='shoebox-ember-data-store').text
-index = str.find('customersAlsoBoughtApps')
-com = re.compile(r'"(\d+)"') #匹配“id”
-similar = com.findall(str[index:index+700])
-similar = [ int(x) for x in similar ] #字符串转数字
-print(similar)
+# """ 你的 APPID AK SK """
+# APP_ID = '15827943'
+# API_KEY = 'eOkQjloKyEGX77h5EtIpKyNg'
+# SECRET_KEY = 'v73VmZGG7tc7UnnS9I32IdlUh518Nh8Y'
+#
+# client = AipNlp(APP_ID, API_KEY, SECRET_KEY)
+# text = "How damaging is the Huawei row for the US and China?"
+#
+# """ 调用词法分析 """
+# print(client.lexer(text))
 
-table = 'app_info'
-field = "similar='{}'".format(similar)
-condition = 'id={}'.format(id)
-print(Database.update_sql(table, field, condition))
+# with open('C:/Users/mayn/Desktop/test.html','rb')as f:
+#     html = f.read()
+response = requests.get('https://www.bbc.com/news/technology')
+doc = Document(response.text)
+print(doc.title())
+print(doc.summary())
