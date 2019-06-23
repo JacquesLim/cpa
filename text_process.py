@@ -80,6 +80,8 @@ def get_flarum_appInfo_post(cpa, id):
     '''
     res = cpa.select_appinfo(id)
     txt = ''
+    if not res:
+        return txt
 
     # print(res)
     icon = get_icon_link(res[1], 100)

@@ -110,7 +110,7 @@ def insert_ali_flarum_sql(ids):
                     fff.write(str(value_disscussion_tag))
                     fff.write(',\n')
 
-def insert_aliyun_flarum_posts_sql(ids):
+def insert_aliyun_flarum_posts_sql(ids, name):
     '''
     输出插入ali_flarum的f_posts表sql语句
     :param ids:
@@ -120,16 +120,19 @@ def insert_aliyun_flarum_posts_sql(ids):
     column_posts = '(`discussion_id`, `number`, `created_at`, `user_id`, `type`, `content`)'
     now = (datetime.datetime.now() - datetime.timedelta(hours=8)).strftime('%Y-%m-%d %H:%M:%S')
     sql_posts = 'insert into ' + table_posts + str(column_posts) + ' values '
-    with open('D:/BaiduNetdiskDownload/posts_full_0617.sql','w+',encoding='utf8')as f:
+    with open('D:/BaiduNetdiskDownload/{}.sql'.format(name),'w+',encoding='utf8')as f:
         #f.write(sql_posts)
         for id in ids:
-            value_posts = (id, 1, now, 3, 'comment', text_process.get_flarum_appInfo_post(cpa, id))
+            text = text_process.get_flarum_appInfo_post(cpa, id)
+            if text=='':
+                continue
+            value_posts = (id, 1, now, 3, 'comment', text)
             f.write(sql_posts+str(value_posts))
             f.write(';\n')
 
-def insert_aliyun_flarum_discussions_sql(cpa, cpa2, ids):
+def insert_aliyun_flarum_discussions_sql(cpa, cpa2, ids, name):
     '''
-    输出插入ali_flarum的f_posts表sql语句
+    输出插入ali_flarum的f_discussions表sql语句
     :param ids:
     :return:
     '''
@@ -138,20 +141,40 @@ def insert_aliyun_flarum_discussions_sql(cpa, cpa2, ids):
                          'last_posted_user_id`, `last_post_id`, `last_post_number`, `slug`, `is_private`, `is_approved`, `is_locked`, `is_sticky`)'
     # now = (datetime.datetime.now() - datetime.timedelta(hours=8)).strftime('%Y-%m-%d %H:%M:%S')
     sql_discussions = 'insert into ' + table_discussions + str(column_discussions) + ' values '
-    with open('D:/BaiduNetdiskDownload/discussions_0618_2.sql','w+',encoding='utf8')as f:
+    with open('D:/BaiduNetdiskDownload/{}.sql'.format(name),'w+',encoding='utf8')as f:
         for id in ids:
             res = cpa.select_appinfo(id)
-            if len(res)>0:
-                title = res[2]
-                post_res = cpa2.get_posts_last_post_id(id)
-                post_id = post_res[0]
-                insert_time = post_res[1].strftime( '%Y-%m-%d %H:%M:%S')
-                value_discussions = (id, title, 1, 1, 1, insert_time, 3, post_id, insert_time, 3, post_id, 1, title, 0, 1, 0, 0)
-                f.write(sql_discussions + str(value_discussions))
-                f.write(';\n')
+            if not res:
+                continue
+            title = res[2]
+            post_res = cpa2.get_posts_last_post_id(id)
+            post_id = post_res[0]
+            insert_time = post_res[1].strftime( '%Y-%m-%d %H:%M:%S')
+            value_discussions = (id, title, 1, 1, 1, insert_time, 3, post_id, insert_time, 3, post_id, 1, title, 0, 1, 0, 0)
+            f.write(sql_discussions + str(value_discussions))
+            f.write(';\n')
+def insert_aliyun_flarum_discussion_tag_sql(ids, name):
+    '''
+    生成插入discussion_tag的sql
+    :param ids:
+    :param name:
+    :return:
+    '''
+    table_discussion_tag = '`f_discussion_tag`'
+    column_discussion_tag = '(`discussion_id`, `tag_id`)'
+    # now = (datetime.datetime.now() - datetime.timedelta(hours=8)).strftime('%Y-%m-%d %H:%M:%S')
+    sql_discussions = 'insert into ' + table_discussion_tag + str(column_discussion_tag) + ' values '
+    with open('D:/BaiduNetdiskDownload/{}.sql'.format(name), 'w+', encoding='utf8')as f:
+        for id in ids:
+            value_discussions = (id, 2)
+            f.write(sql_discussions + str(value_discussions))
+            f.write(';\n')
 
-
-
+def insert_mac_flarum(id):
+    sql = "INSERT IGNORE INTO mac_flarum.f_posts(`discussion_id`,`number`,`created_at`,`user_id`,`type`,`content`,`edited_at`,`edited_user_id`,`hidden_at`,`hidden_user_id`,`ip_address`,`is_private`,`is_approved`) SELECT `discussion_id`,`number`,`created_at`,`user_id`,`type`,`content`,`edited_at`,`edited_user_id`,`hidden_at`,`hidden_user_id`,`ip_address`,`is_private`,`is_approved` FROM tbf_flarum.f_posts WHERE discussion_id={};" \
+          "INSERT IGNORE INTO mac_flarum.f_discussions(`id`,`title`,`comment_count`,`participant_count`,`post_number_index`,`created_at`,`user_id`,`last_posted_at`,`last_posted_user_id`,`last_post_number`,`hidden_at`,`hidden_user_id`,`slug`,`is_private`,`is_approved`,`is_locked`,`is_sticky`)SELECT `id`,`title`,`comment_count`,`participant_count`,`post_number_index`,`created_at`,`user_id`,`last_posted_at`,`last_posted_user_id`,`last_post_number`,`hidden_at`,`hidden_user_id`,`slug`,`is_private`,`is_approved`,`is_locked`,`is_sticky` FROM tbf_flarum.f_discussions WHERE id={};" \
+          "INSERT IGNORE INTO mac_flarum.f_discussion_tag(`discussion_id`,`tag_id`) SELECT `discussion_id`,`tag_id` FROM tbf_flarum.f_discussion_tag WHERE discussion_id={};".format(id,id,id)
+    return sql
 if __name__ == "__main__":
     #数据库字段声明
     host = "rm-wz995s1cl86g21j840o.mysql.rds.aliyuncs.com"
@@ -163,12 +186,34 @@ if __name__ == "__main__":
     cpa = Database(host, port, user, passwd, db, charset)
     db2 = "tbf_flarum"
     cpa2 = Database(host, port, user, passwd, db2, charset)
+    db3 = "mac_flarum"
+    cpa3 = Database(host, port, user, passwd, db3, charset)
 
-    with open('D:/BaiduNetdiskDownload/new_ali_flarm_ids.txt', 'r', encoding='utf8')as f:
-        ids = f.read().strip().split('\n')
+
+    #with open('D:/BaiduNetdiskDownload/new_ali_flarm_ids.txt', 'r', encoding='utf8')as f:
+        #with open('D:/BaiduNetdiskDownload/test_mac_flarum.sql', 'w+', encoding='utf8')as ff:
+            #for id in f:
+                #sql = insert_mac_flarum(id.strip())
+                #ff.write(sql)
+                #ff.write('\n')
+                #print(sql)
+                #cpa3.query_sql(sql)
+    # with open('D:/BaiduNetdiskDownload/test_mac_flarum.sql', 'rb')as f:
+    #     with open('D:/BaiduNetdiskDownload/test_mac_flarum2.sql', 'wb+')as ff:
+    #         for line in f:
+    #             ff.write(line)
+    #             ff.write(b'commit;\n')
+
+
+    #生成导入flarum的三个表的sql语句
+    with open('D:/BaiduNetdiskDownload/ids_0623.txt', 'r', encoding='utf8')as f:
+        ids = f.read().replace('\ufeff','').strip().split('\n')
         ids = [int(x) for x in ids]
-        insert_aliyun_flarum_discussions_sql(cpa, cpa2, ids)
-        # insert_aliyun_flarum_posts_sql(ids)
+        insert_aliyun_flarum_discussion_tag_sql(ids,'f_discussion_tag_0623')
+        # insert_aliyun_flarum_discussions_sql(cpa, cpa2, ids,'f_discussions_0623')
+        # insert_aliyun_flarum_posts_sql(ids,'f_posts_0623')
+
+
 
     # 搜索关键词，并插入数据库
     # dataset = scrapy.scrapy_qimai_search("中标")

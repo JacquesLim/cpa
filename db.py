@@ -25,6 +25,10 @@ class Database:
         self.connect = connect
         self.cursor = cursor
 
+    def query_sql(self,sql):
+        self.cursor.execute(sql)
+        self.connect.commit()
+
     def insert(self, table, column, datatype, value):
         '''
         向数据表table插入数据
