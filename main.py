@@ -119,7 +119,7 @@ def insert_aliyun_flarum_posts_sql(ids, name):
     table_posts = '`f_posts`'
     column_posts = '(`discussion_id`, `number`, `created_at`, `user_id`, `type`, `content`)'
     now = (datetime.datetime.now() - datetime.timedelta(hours=8)).strftime('%Y-%m-%d %H:%M:%S')
-    sql_posts = 'insert into ' + table_posts + str(column_posts) + ' values '
+    sql_posts = 'insert ignore into ' + table_posts + str(column_posts) + ' values '
     with open('D:/BaiduNetdiskDownload/{}.sql'.format(name),'w+',encoding='utf8')as f:
         #f.write(sql_posts)
         for id in ids:
@@ -140,7 +140,7 @@ def insert_aliyun_flarum_discussions_sql(cpa, cpa2, ids, name):
     column_discussions = '(`id`, `title`, `comment_count`, `participant_count`, `post_number_index`, `created_at`, `user_id`, `first_post_id`, `last_posted_at`, `' \
                          'last_posted_user_id`, `last_post_id`, `last_post_number`, `slug`, `is_private`, `is_approved`, `is_locked`, `is_sticky`)'
     # now = (datetime.datetime.now() - datetime.timedelta(hours=8)).strftime('%Y-%m-%d %H:%M:%S')
-    sql_discussions = 'insert into ' + table_discussions + str(column_discussions) + ' values '
+    sql_discussions = 'insert ignore into ' + table_discussions + str(column_discussions) + ' values '
     with open('D:/BaiduNetdiskDownload/{}.sql'.format(name),'w+',encoding='utf8')as f:
         for id in ids:
             res = cpa.select_appinfo(id)
@@ -148,6 +148,8 @@ def insert_aliyun_flarum_discussions_sql(cpa, cpa2, ids, name):
                 continue
             title = res[2]
             post_res = cpa2.get_posts_last_post_id(id)
+            if not post_res:
+                continue
             post_id = post_res[0]
             insert_time = post_res[1].strftime( '%Y-%m-%d %H:%M:%S')
             value_discussions = (id, title, 1, 1, 1, insert_time, 3, post_id, insert_time, 3, post_id, 1, title, 0, 1, 0, 0)
@@ -163,11 +165,11 @@ def insert_aliyun_flarum_discussion_tag_sql(ids, name):
     table_discussion_tag = '`f_discussion_tag`'
     column_discussion_tag = '(`discussion_id`, `tag_id`)'
     # now = (datetime.datetime.now() - datetime.timedelta(hours=8)).strftime('%Y-%m-%d %H:%M:%S')
-    sql_discussions = 'insert into ' + table_discussion_tag + str(column_discussion_tag) + ' values '
+    sql_discussion_tag = 'insert ignore into ' + table_discussion_tag + str(column_discussion_tag) + ' values '
     with open('D:/BaiduNetdiskDownload/{}.sql'.format(name), 'w+', encoding='utf8')as f:
         for id in ids:
-            value_discussions = (id, 2)
-            f.write(sql_discussions + str(value_discussions))
+            value_discussion_tag = (id, 2)
+            f.write(sql_discussion_tag + str(value_discussion_tag))
             f.write(';\n')
 
 def insert_mac_flarum(id):
@@ -206,12 +208,12 @@ if __name__ == "__main__":
 
 
     #生成导入flarum的三个表的sql语句
-    with open('D:/BaiduNetdiskDownload/ids_0623.txt', 'r', encoding='utf8')as f:
+    with open('D:\BaiduNetdiskDownload\myjob\python\itunes_monitor\datafile\\app_urls_inc\\2019_6_23_22_48\\all_appIds.txt', 'r', encoding='utf8')as f:
         ids = f.read().replace('\ufeff','').strip().split('\n')
         ids = [int(x) for x in ids]
-        insert_aliyun_flarum_discussion_tag_sql(ids,'f_discussion_tag_0623')
-        # insert_aliyun_flarum_discussions_sql(cpa, cpa2, ids,'f_discussions_0623')
-        # insert_aliyun_flarum_posts_sql(ids,'f_posts_0623')
+        insert_aliyun_flarum_discussion_tag_sql(ids,'f_discussion_tag_0624')
+        # insert_aliyun_flarum_discussions_sql(cpa, cpa2, ids,'f_discussions_0624')
+        # insert_aliyun_flarum_posts_sql(ids,'f_posts_0624')
 
 
 
